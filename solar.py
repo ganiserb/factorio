@@ -1,4 +1,5 @@
 # coding=utf-8
+import pprint
 from simpleai.search import SearchProblem
 from simpleai.search.local import simulated_annealing
 
@@ -33,6 +34,8 @@ class Board:
     Tiles can be moved into empty spaces. " "
     There is a special kind of tile that cannot be moved. "0"
     """
+    EMPTY = '_'
+    IMMOVABLE = '0'
     # Example:
     #
     # [C,C,C]
@@ -57,8 +60,14 @@ class Board:
         self.board = []
         # Generate an empty board
         for x in range(width):
-            column = list(" " * height)
+            column = list(self.EMPTY * height)
             self.board.append(column)
+
+    def __repr__(self):
+        lines = []
+        for i in self.board:
+            lines.append(''.join(i))
+        return '\n'.join(lines)
 
     def _store_new_tile(self, x, y, width, height, char):
         """Store the info of a new tile in the index"""
@@ -79,7 +88,7 @@ class Board:
         Adds a gap, or immovable tile in the specified position
         Gaps are represented with a "0"
         """
-        self.add_tile(x, y, width, height, "0")
+        self.add_tile(x, y, width, height, self.IMMOVABLE)
 
     def add_tile(self, x, y, width, height, char):
         """
@@ -103,7 +112,7 @@ class Board:
         values = []
         for i in range(width):
             for j in range(height):
-                values.append(self.board[x + i][y + j] == " ")
+                values.append(self.board[x + i][y + j] == self.EMPTY)
         return all(values)
 
 
@@ -111,6 +120,6 @@ if __name__ == '__main__':
     board = Board(200, 200)
     print(board.can_fit(2, 2, 100, 100))
     board.add_tile(2, 2, 100, 100, 'X')
-    print(board.board)
-    print(board.tiles)
-    board.add_tile(3, 3, 2, 2, "A")
+    print(board)
+    # print(board.tiles)
+    # board.add_tile(3, 3, 2, 2, "A")
